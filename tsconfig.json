@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "build",
+    "esModuleInterop": true,
+    "target": "ES2022",
+    "moduleResolution":"node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "typeRoots" : [
+      "./src/@types", "./node_modules/@types"]
+  },
+  "include": ["src/**/*.ts", "./typings/**/*.d.ts"],
+  "exclude": ["node_modules/**", "dist"]
+}
