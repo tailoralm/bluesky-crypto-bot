@@ -6,8 +6,8 @@ import {
   getPriceChange24h,
   getTotalVolume,
   getTotalVolumeChange24h,
-} from "../processors/bitcoinDataProcessors";
-import { formatDate } from "../utils/formatUtils";
+} from "../processors/bitcoin.processor";
+import { formatDate } from "../utils/format.utils";
 
 export const createBitcoinSection = (date) => {
   return `#Bitcoin 24h Update - ${formatDate(date)}\n\n`;

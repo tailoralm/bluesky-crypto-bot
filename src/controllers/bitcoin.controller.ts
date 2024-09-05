@@ -1,24 +1,31 @@
-import {fetchPriceData} from "../services/getters/bitcoinDataService";
+import BitcoinService from "../services/getters/bitcoin.service";
 import {
     create24hPriceUpdateSummary,
     createCurrentPriceAnd1hChangeSummary
-} from "../messageBuilders/bitcoinMessageBuilders";
-import {postBlueSky} from "../services/publishers/blueskyService";
+} from "../messageBuilders/bitcoin.message-builder";
+import {postBlueSky} from "../services/publishers/bluesky.service";
 
 export default class BitcoinController {
+    bitcoinService: BitcoinService
+    constructor() {
+        this.bitcoinService = new BitcoinService();
+    }
+
+    async getPrice() {
+        const priceData = await this.bitcoinService.fetchPriceData();
+        if (!priceData)
+            throw new Error(
+                "Failed to fetch Bitcoin price data or received empty response."
+            );
+        console.log(priceData);
+        return priceData;
+    }
     async postBlueSkyBitcoin1hPriceUpdate() {
         try {
-            const response = await fetchPriceData(
-                process.env['COIN_ID'],
-                process.env['CURRENCY']
-            );
-
-            if (!response) {
-                throw new Error("No data returned from the fetchPriceData function.");
-            }
+            const response = await this.getPrice();
 
             const summaryMessage = createCurrentPriceAnd1hChangeSummary(response);
-            await postBlueSky(summaryMessage);
+            // await postBlueSky(summaryMessage);
 
             console.log("BlueSky post successfully created. Message:", summaryMessage);
         } catch (error) {
@@ -32,19 +39,10 @@ export default class BitcoinController {
 
     async postBlueSkyBitcoin24hPriceUpdate() {
         try {
-            const priceData = await fetchPriceData(
-                process.env['COIN_ID'],
-                process.env['CURRENCY']
-            );
-
-            if (!priceData) {
-                throw new Error(
-                    "Failed to fetch Bitcoin price data or received empty response."
-                );
-            }
+            const priceData = await this.getPrice();
 
             const summaryMessage = create24hPriceUpdateSummary(priceData);
-            await postBlueSky(summaryMessage);
+            // await postBlueSky(summaryMessage);
 
             console.log("BlueSky post successfully created. Message:", summaryMessage);
         } catch (error) {

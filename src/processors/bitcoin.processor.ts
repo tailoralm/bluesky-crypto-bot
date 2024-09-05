@@ -1,7 +1,7 @@
 import {
   calculatePercentageChange,
   formatCurrency,
-} from "../utils/formatUtils";
+} from "../utils/format.utils";
 
 export const getCurrentPrice = (data) => {
   return formatCurrency(data.prices[data.prices.length - 1][1]);
