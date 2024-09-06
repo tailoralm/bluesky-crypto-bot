@@ -17,39 +17,37 @@ export default class BlueskyService {
         );
         return response.data.accessJwt;
       } catch (error) {
-        throw new Error(`Error authenticating with BlueSky: ${error.message}`);
+        throw new Error(`Error authenticating with BlueSky(${this.identifier}): ${error.message}`);
       }
     }
 
     async postBlueSky(message) {
       try {
         const token = await this.authenticateBlueSky();
-
         const facets = this.createHashtagFacets(message);
-
         const postResponse = await axios.post(
             `${this.BASE_URL}/com.atproto.repo.createRecord`,
             {
-            collection: "app.bsky.feed.post",
-            repo: this.identifier,
-            record: {
-                $type: "app.bsky.feed.post",
-                text: message,
-                facets,
-                createdAt: new Date().toISOString(),
+                collection: "app.bsky.feed.post",
+                repo: this.identifier,
+                record: {
+                    $type: "app.bsky.feed.post",
+                    text: message,
+                    facets,
+                    createdAt: new Date().toISOString(),
+                },
             },
-            },
-            {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
-        console.log("BlueSky post with hashtags successful:", postResponse.data);
+        console.log(`BlueSky post with hashtags successful for ${this.identifier}`);
         return postResponse.data;
       } catch (error) {
-        throw new Error(`Error posting to BlueSky: ${error.message}`);
+        throw new Error(`Error posting to BlueSky(${this.identifier}): ${error.message}`);
       }
     }
 
