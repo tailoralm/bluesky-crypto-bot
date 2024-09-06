@@ -1,6 +1,6 @@
 FROM node:lts-iron
 
-WORKDIR /usr/app/backend
+WORKDIR /usr/app
 
 COPY . .
 
