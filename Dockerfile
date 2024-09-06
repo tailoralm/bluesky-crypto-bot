@@ -1,9 +1,11 @@
-FROM node:lts-iron
+FROM node:20-alpine
 
-WORKDIR /usr/app/backend
+WORKDIR /usr/app
 
-COPY . .
+COPY package*.json ./
 
 RUN npm install
+
+COPY . .
 
 CMD ["npm","start"]

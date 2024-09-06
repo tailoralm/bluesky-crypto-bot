@@ -1,22 +1,30 @@
 import * as schedule from "node-schedule";
-import BitcoinController from "./bitcoin.controller";
+import * as Log from "../utils/log.utils";
 import {CRON} from "../utils/enums.utils";
+import CoinsController from "./coins.controller";
 export default class RoutinesController {
     private jobs: schedule.Job[] = [];
-    private bitcoinController: BitcoinController;
+    private coinsController: CoinsController;
     constructor() {
-        this.bitcoinController = new BitcoinController();
+        this.coinsController = new CoinsController();
     }
 
     init(){
-        this.bitcoinController.postBitcoin1hPrice();
-        this.bitcoinController.postBitcoin24hPrice();
-        this.jobs.push(schedule.scheduleJob(CRON.EVERY_MINUTE_59, () => {
-            this.bitcoinController.postBitcoin1hPrice();
-        }));
-        this.jobs.push(schedule.scheduleJob(CRON.MINUTE_59_7H19H, () => {
-            this.bitcoinController.postBitcoin24hPrice();
-        }));
+        if(process.env.IS_DEV) {
+            console.log('Running for DEV');
+            this.coinsController.postAllCryptos24h();
+        } else {
+            this.jobs.push(schedule.scheduleJob(CRON.EVERY_HOUR, () => {
+                const now = new Date();
+                Log.log('Running process');
+
+                if (now.getHours() === 7 || now.getHours() === 19) {
+                    this.coinsController.postAllCryptos24h();
+                } else {
+                    this.coinsController.postSingleCryptos1hIfVariation(1); 
+                }
+            }));
+        }
     }
 
     cancelAll() {
