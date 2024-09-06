@@ -1,9 +1,16 @@
 services:
-  backend:
+  crypto-bot:
     build: .
     command: npm start
     env_file:
-      - ./.env
+      - ./:.env
     restart: always
     volumes:
       - ./:/usr/app/
+
+
+  BASE_PATH=/home/fran/Docker
+  WEBPASSWORD='home#S3rver'
+  TZ=Europe/Lisbon
+
+  - ${BASE_PATH}/info-twitter-bot/data:/data

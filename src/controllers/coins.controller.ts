@@ -28,16 +28,13 @@ export default class CoinsController {
     async postAllCryptos1h() {
         try {
             const bitcoinLast1hPost = await this.bitcoinController.get1hPricePost();
-            // await this.postBothBtc(bitcoinLast1hPost);
+            await this.postBothBtc(bitcoinLast1hPost);
 
             const etherLast1hPost = await this.etherController.get1hPricePost();
-            // await this.postBothEther(etherLast1hPost);
+            await this.postBothEther(etherLast1hPost);
 
             const solanaLast1hPost = await this.solanaController.get1hPricePost();
-            // await this.postBothSol(solanaLast1hPost);
-            console.log(bitcoinLast1hPost)
-            console.log(etherLast1hPost)
-            console.log(solanaLast1hPost)
+            await this.postBothSol(solanaLast1hPost);
         } catch (error) {
             console.error(error.message);
         }
@@ -46,13 +43,13 @@ export default class CoinsController {
     async postAllCryptos24h() {
         try {
             const bitcoinLast24hPost = await this.bitcoinController.get24hPricePost();
-            // await this.postBothBtc(bitcoinLast24hPost);
+            await this.postBothBtc(bitcoinLast24hPost);
 
             const etherLast24hPost = await this.etherController.get24hPricePost();
-            // await this.postBothEther(etherLast24hPost);
+            await this.postBothEther(etherLast24hPost);
 
             const solanaLast24hPost = await this.solanaController.get24hPricePost();
-            // await this.postBothSol(solanaLast24hPost);
+            await this.postBothSol(solanaLast24hPost);
         } catch (error) {
             console.error(error.message);
         }
