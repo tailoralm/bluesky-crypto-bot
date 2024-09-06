@@ -9,13 +9,13 @@ export default class RoutinesController {
     }
 
     init(){
-        this.bitcoinController.postBlueSkyBitcoin1hPriceUpdate();
-        this.bitcoinController.postBlueSkyBitcoin24hPriceUpdate();
+        this.bitcoinController.postBitcoin1hPrice();
+        this.bitcoinController.postBitcoin24hPrice();
         this.jobs.push(schedule.scheduleJob(CRON.EVERY_MINUTE_59, () => {
-            this.bitcoinController.postBlueSkyBitcoin1hPriceUpdate();
+            this.bitcoinController.postBitcoin1hPrice();
         }));
         this.jobs.push(schedule.scheduleJob(CRON.MINUTE_59_7H19H, () => {
-            this.bitcoinController.postBlueSkyBitcoin24hPriceUpdate();
+            this.bitcoinController.postBitcoin24hPrice();
         }));
     }
 
