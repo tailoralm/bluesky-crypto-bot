@@ -13,7 +13,7 @@ export default class BitcoinController {
     messageBuilder: CryptoMessageBuilder;
     constructor() {
         this.bitcoinService = new CoingeckoService('bitcoin', 'usd');
-        this.blueskyService = new BlueskyService(process.env.BLUESKY_HANDLE, process.env.BLUESKY_PASSWORD);
+        this.blueskyService = new BlueskyService(process.env.BLUESKY_BTC_USER, process.env.BLUESKY_BTC_PASSWORD);
         this.messageBuilder = new CryptoMessageBuilder('Bitcoin');
     }
 
