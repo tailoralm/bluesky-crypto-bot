@@ -7,10 +7,3 @@ services:
     restart: always
     volumes:
       - ./:/usr/app/
-
-
-  BASE_PATH=/home/fran/Docker
-  WEBPASSWORD='home#S3rver'
-  TZ=Europe/Lisbon
-
-  - ${BASE_PATH}/info-twitter-bot/data:/data

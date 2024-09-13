@@ -1,4 +1,5 @@
 import axios from "axios";
+import {ICryptoGetPrice} from "../../interfaces/cryptos.interface";
 
 export default class BlueskyService {
   BASE_URL: string;
@@ -21,10 +22,11 @@ export default class BlueskyService {
       }
     }
 
-    async postBlueSky(message) {
+    async postBlueSky(message: ICryptoGetPrice) {
+      if (process.env.IS_DEV) return console.log(message);
       try {
         const token = await this.authenticateBlueSky();
-        const facets = this.createHashtagFacets(message);
+        const facets = this.createHashtagFacets(message.postText);
         const postResponse = await axios.post(
             `${this.BASE_URL}/com.atproto.repo.createRecord`,
             {
@@ -32,7 +34,7 @@ export default class BlueskyService {
                 repo: this.identifier,
                 record: {
                     $type: "app.bsky.feed.post",
-                    text: message,
+                    text: message.postText,
                     facets,
                     createdAt: new Date().toISOString(),
                 },
@@ -51,9 +53,12 @@ export default class BlueskyService {
       }
     }
 
-    createHashtagFacets(message) {
+    createHashtagFacets(message: string) {
+      console.log(message);
       const hashtagRegex = /#\w+/g;
       const matches = [...message.matchAll(hashtagRegex)];
+
+      console.log(matches);
 
       return matches.map((match) => ({
         index: {

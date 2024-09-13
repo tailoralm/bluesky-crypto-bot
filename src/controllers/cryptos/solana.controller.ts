@@ -4,7 +4,7 @@ import {myCache} from "../../utils/cache.utils";
 
 export default class SolanaController extends CryptoController {
     constructor() {
-        super('solana', 'usd', 'Solana');
+        super('solana', 'usd');
     }
 
     @Cache(myCache, {ttl: 60})

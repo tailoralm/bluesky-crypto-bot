@@ -1,4 +1,5 @@
 import * as schedule from "node-schedule";
+import * as Log from "../utils/log.utils";
 import {CRON} from "../utils/enums.utils";
 import CoinsController from "./coins.controller";
 export default class RoutinesController {
@@ -9,13 +10,21 @@ export default class RoutinesController {
     }
 
     init(){
-        this.jobs.push(schedule.scheduleJob(CRON.EVERY_MINUTE_35, () => {
-            this.coinsController.postAllCryptos1h();
-        }));
-
-        this.jobs.push(schedule.scheduleJob(CRON.MINUTE_35_7H19H, () => {
+        if(process.env.IS_DEV) {
+            console.log('Running for DEV');
             this.coinsController.postAllCryptos24h();
-        }));
+        } else {
+            this.jobs.push(schedule.scheduleJob(CRON.EVERY_HOUR, () => {
+                const now = new Date();
+                Log.log('Running process');
+
+                if (now.getHours() === 7 || now.getHours() === 19) {
+                    this.coinsController.postAllCryptos24h();
+                } else {
+                    this.coinsController.postSingleCryptos1hIfVariation(1); 
+                }
+            }));
+        }
     }
 
     cancelAll() {
