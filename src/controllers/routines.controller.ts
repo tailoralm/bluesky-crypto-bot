@@ -9,11 +9,12 @@ export default class RoutinesController {
     }
 
     init(){
+        this.coinsController.postSingleCryptos1hIfVariation(1);
         this.jobs.push(schedule.scheduleJob(CRON.EVERY_MINUTE_35, () => {
-            this.coinsController.postAllCryptos1h();
+            this.coinsController.postSingleCryptos1hIfVariation(1);
         }));
 
-        this.jobs.push(schedule.scheduleJob(CRON.MINUTE_35_7H19H, () => {
+        this.jobs.push(schedule.scheduleJob(CRON.MINUTE_59_7H19H, () => {
             this.coinsController.postAllCryptos24h();
         }));
     }
