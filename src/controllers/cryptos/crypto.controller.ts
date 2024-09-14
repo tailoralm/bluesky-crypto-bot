@@ -1,6 +1,7 @@
 import CoingeckoService from "../../services/getters/coingecko.service";
 import CryptoMessageBuilder from "../../message-builders/crypto.message-builder";
 import {getCurrentPrice, getPriceChange1h} from "../../utils/coin.coingecko.utils";
+import {ICryptoGetPrice} from "../../interfaces/cryptos.interface";
 
 export default class CryptoController {
     protected coingeckoService: CoingeckoService;
@@ -15,7 +16,7 @@ export default class CryptoController {
         return this.coingeckoService.fetchPriceData();
     }
 
-    async get1hPricePost() {
+    async get1hPricePost(): Promise<ICryptoGetPrice> {
         const response = await this.getCachedPriceData();
         const currentPrice = getCurrentPrice(response);
         const priceChange1h = getPriceChange1h(response);
