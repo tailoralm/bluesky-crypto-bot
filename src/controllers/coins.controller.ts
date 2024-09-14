@@ -3,6 +3,7 @@ import EtherController from "./cryptos/ether.controller";
 import SolanaController from "./cryptos/solana.controller";
 import BlueskyService from "../services/publishers/bluesky.service";
 import {ITimePost, myCache} from "../utils/cache.utils";
+import { TIMER } from "../utils/enums.utils";
 
 export default class CoinsController {
     // Create Posts
@@ -15,8 +16,6 @@ export default class CoinsController {
     etherPriceAccount: BlueskyService;
     solPriceAccount: BlueskyService;
     cryptoPriceAccount: BlueskyService;
-
-    private readonly SIX_HOURS_IN_MS = 6 * 60 * 60 * 1000;
 
     constructor() {
         this.bitcoinController = new BitcoinController();
@@ -39,8 +38,9 @@ export default class CoinsController {
             if(Math.abs(bitcoinLast1hPost.priceChange1h) >= minVariation) {
                 await this.btcPriceAccount.postBlueSky(bitcoinLast1hPost);
                 await this.cryptoPriceAccount.postBlueSky(bitcoinLast1hPost);
-            } else if (!lastPostTimestamp.btc || (currentTimestamp - lastPostTimestamp.btc) > this.SIX_HOURS_IN_MS) {
+            } else if (!lastPostTimestamp.btc || (currentTimestamp - lastPostTimestamp.btc) > TIMER.SIX_HOURS_IN_MS) {
                 await this.btcPriceAccount.postBlueSky(bitcoinLast1hPost);
+                lastPostTimestamp.btc = currentTimestamp;
             }
             
             const etherLast1hPost = await this.etherController.get1hPricePost();
@@ -48,8 +48,9 @@ export default class CoinsController {
             if (Math.abs(etherLast1hPost.priceChange1h) >= minVariation) {
                 await this.etherPriceAccount.postBlueSky(etherLast1hPost);
                 await this.cryptoPriceAccount.postBlueSky(etherLast1hPost);
-            } else if (!lastPostTimestamp.eth || (currentTimestamp - lastPostTimestamp.eth) > this.SIX_HOURS_IN_MS) {
+            } else if (!lastPostTimestamp.eth || (currentTimestamp - lastPostTimestamp.eth) > TIMER.SIX_HOURS_IN_MS) {
                 await this.etherPriceAccount.postBlueSky(etherLast1hPost);
+                lastPostTimestamp.eth = currentTimestamp;
             }
             
             const solanaLast1hPost = await this.solanaController.get1hPricePost();
@@ -57,9 +58,12 @@ export default class CoinsController {
             if (Math.abs(solanaLast1hPost.priceChange1h) >= minVariation) {
                 await this.solPriceAccount.postBlueSky(solanaLast1hPost);
                 await this.cryptoPriceAccount.postBlueSky(solanaLast1hPost);
-            } else if(!lastPostTimestamp.sol || (currentTimestamp - lastPostTimestamp.sol) > this.SIX_HOURS_IN_MS) {
+            } else if(!lastPostTimestamp.sol || (currentTimestamp - lastPostTimestamp.sol) > TIMER.SIX_HOURS_IN_MS) {
                 await this.solPriceAccount.postBlueSky(solanaLast1hPost);
+                lastPostTimestamp.sol = currentTimestamp;
             }
+
+            await myCache.setItem('lastPostTimestamp', JSON.stringify(lastPostTimestamp), { ttl: TIMER.SIX_HOURS_IN_SEC});
         } catch (error) {
             console.error(error.message);
         }
