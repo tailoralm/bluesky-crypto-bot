@@ -6,6 +6,7 @@ export default class BitcoinController extends CryptoController {
     constructor() {
         super('bitcoin', 'usd', 'Bitcoin');
     }
+    
     @Cache(myCache, {ttl: 60})
     protected getCachedPriceData(){
         return super.getCachedPriceData();

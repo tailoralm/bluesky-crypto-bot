@@ -22,6 +22,7 @@ export default class BlueskyService {
     }
 
     async postBlueSky(message) {
+      if (process.env.IS_DEV) return console.log(message);
       try {
         const token = await this.authenticateBlueSky();
         const facets = this.createHashtagFacets(message);

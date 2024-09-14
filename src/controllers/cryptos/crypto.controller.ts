@@ -1,7 +1,5 @@
-import { Cache } from 'node-ts-cache';
 import CoingeckoService from "../../services/getters/coingecko.service";
 import CryptoMessageBuilder from "../../message-builders/crypto.message-builder";
-import { myCache } from "../../utils/cache.utils";
 import {getCurrentPrice, getPriceChange1h} from "../../utils/coin.coingecko.utils";
 
 export default class CryptoController {
@@ -29,5 +27,6 @@ export default class CryptoController {
         const priceData = await this.getCachedPriceData();
         return this.messageBuilder.create24hPriceUpdateSummary(priceData);
     };
+
 }
 
