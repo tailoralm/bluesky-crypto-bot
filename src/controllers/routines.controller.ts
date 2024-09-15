@@ -10,7 +10,7 @@ export default class RoutinesController {
     }
 
     init(){
-        if(!process.env.IS_DEV) {
+        if(process.env.IS_DEV) {
             console.log('Running for DEV');
             this.coinsController.postAllCryptos24h();
         } else {
