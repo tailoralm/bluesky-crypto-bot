@@ -24,9 +24,10 @@ export default class CryptoController {
         return { currentPrice, priceChange1h: Number(priceChange1h), postText };
     };
 
-    async get24hPost() {
+    async get24hPost(): Promise<ICryptoGetPrice> {
         const priceData = await this.getCachedPriceData();
-        return this.messageBuilder.create24hPriceUpdateSummary(priceData);
+        const postText = this.messageBuilder.create24hPriceUpdateSummary(priceData);
+        return { postText };
     };
 
 }

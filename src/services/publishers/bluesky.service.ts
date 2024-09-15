@@ -54,6 +54,7 @@ export default class BlueskyService {
     }
 
     createHashtagFacets(message: string) {
+      console.log(message);
       const hashtagRegex = /#\w+/g;
       const matches = [...message.matchAll(hashtagRegex)];
 

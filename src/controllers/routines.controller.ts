@@ -10,8 +10,9 @@ export default class RoutinesController {
     }
 
     init(){
-        if(process.env.IS_DEV) {
-            this.coinsController.postSingleCryptos1hIfVariation(1);
+        if(!process.env.IS_DEV) {
+            console.log('Running for DEV');
+            this.coinsController.postAllCryptos24h();
         } else {
             this.jobs.push(schedule.scheduleJob(CRON.EVERY_HOUR, () => {
                 const now = new Date();
