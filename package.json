@@ -8,6 +8,8 @@
   },
   "description": "",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.651.1",
+    "@aws-sdk/lib-dynamodb": "^3.651.1",
     "@sparticuz/chromium": "^119.0.2",
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
