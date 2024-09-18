@@ -1,6 +1,6 @@
 import { AttributeDefinition, CreateTableCommand, CreateTableCommandInput, DescribeTableCommand, DynamoDBClient, KeySchemaElement } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, ScanCommand, PutCommand, GetCommand, DeleteCommand, BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
-import { chunkArray } from "../../../utils/format.utils";
+import { chunkArray } from "../../../shared/utils/format.utils";
 
 export abstract class DynamodbStorage {
     private client: DynamoDBDocumentClient;
@@ -9,14 +9,7 @@ export abstract class DynamodbStorage {
     constructor(tableName: string) {
         this.tableName = tableName;
 
-        const dynamoClient = new DynamoDBClient({
-            region: process.env.DYNAMO_REGION, 
-            endpoint: process.env.DYNAMO_URL,
-            credentials: {
-                accessKeyId: 'jkg8s',
-                secretAccessKey: 'n16zfml'
-            }
-        });
+        const dynamoClient = new DynamoDBClient({ endpoint: process.env.DYNAMODB_ENDPOINT });
 
         this.client = DynamoDBDocumentClient.from(dynamoClient);
     }

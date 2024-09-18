@@ -1,10 +1,10 @@
 import CryptoController from "./crypto.controller";
 import {Cache} from "node-ts-cache";
-import {myCache} from "../../utils/cache.utils";
+import {myCache} from "../../../../shared/utils/cache.utils";
 
-export default class EtherController extends CryptoController {
+export default class SolanaController extends CryptoController {
     constructor() {
-        super('ethereum', 'usd');
+        super('solana', 'usd');
     }
 
     @Cache(myCache, {ttl: 60})

@@ -1,6 +1,6 @@
 import { Cache } from "node-ts-cache";
 import { DynamodbStorage } from './dynamodb.storage';
-import { myCache } from "../../../utils/cache.utils";
+import { myCache } from "../../../shared/utils/cache.utils";
 
 export class CoinHistoryStorage extends DynamodbStorage {
     constructor() {
@@ -8,11 +8,11 @@ export class CoinHistoryStorage extends DynamodbStorage {
         this.createTable();
     }
 
-    async saveItem(data: ICoinPriceHistory): Promise<void> {
+    saveItem(data: ICoinPriceHistory): Promise<void> {
         return super.saveItem(data);
     }
 
-    async saveItems(data: ICoinPriceHistory[]): Promise<void> {
+    saveItems(data: ICoinPriceHistory[]): Promise<void> {
         return super.saveItems(data);
     }
 

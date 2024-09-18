@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import RoutinesController from "./controllers/routines.controller";
+import RoutinesController from "./modules/routines/routines.controller";
 
 try {
     dotenv.config();

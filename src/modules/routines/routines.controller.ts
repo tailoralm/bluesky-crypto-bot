@@ -1,7 +1,7 @@
 import * as schedule from "node-schedule";
-import * as Log from "../utils/log.utils";
-import {CRON} from "../utils/enums.utils";
-import CoinsController from "./coins.controller";
+import * as Log from "../../shared/utils/log.utils";
+import {CRON} from "../../shared/utils/enums.utils";
+import CoinsController from "./crypto-post-bluesky/crypto-post-bluesky.controller";
 export default class RoutinesController {
     private jobs: schedule.Job[] = [];
     private coinsController: CoinsController;
@@ -10,6 +10,7 @@ export default class RoutinesController {
     }
 
     init(){
+        Log.log('Creating jobs...');
         if(process.env.IS_DEV) {
             console.log('Running for DEV');
             this.coinsController.postAllCryptos24h();

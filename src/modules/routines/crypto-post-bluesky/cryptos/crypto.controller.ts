@@ -1,9 +1,9 @@
-import CoingeckoService from "../../services/getters/coingecko.service";
-import CryptoMessageBuilder from "../../message-builders/crypto.message-builder";
-import {getCurrentPrice, getPriceChange1h} from "../../utils/coin.coingecko.utils";
-import {ICryptoGetPrice} from "../../interfaces/cryptos.interface";
-import { CoinHistoryStorage, ICoinPriceHistory } from "../../services/storage/dynamodb/coin-history.storage";
-import { IMarketChart } from "../../interfaces/coingecko.interface";
+import CoingeckoService from "../../../../shared/services/coingecko/coingecko.service";
+import CryptoMessageBuilder from "../crypto.message-builder";
+import {getCurrentPrice, getPriceChange1h} from "../../../../shared/services/coingecko/coingecko.utils";
+import {ICryptoGetPrice} from "../../../../shared/interfaces/cryptos.interface";
+import { CoinHistoryStorage, ICoinPriceHistory } from "../../../../shared/services/dynamodb/coin-history.storage";
+import { IMarketChart } from "../../../../shared/services/coingecko/coingecko.interface";
 
 export default class CryptoController {
     protected coingeckoService: CoingeckoService;
