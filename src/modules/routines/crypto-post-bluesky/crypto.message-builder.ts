@@ -6,9 +6,9 @@ import {
     getPriceChange24h,
     getTotalVolume,
     getTotalVolumeChange24h,
-} from "../utils/coin.coingecko.utils";
-import { formatDate } from "../utils/format.utils";
-import {IMarketChart} from "../interfaces/coingecko.interface";
+} from "../../../shared/services/coingecko/coingecko.utils";
+import { formatDate } from "../../../shared/utils/format.utils";
+import {IMarketChart} from "../../../shared/services/coingecko/coingecko.interface";
 
 export default class CryptoMessageBuilder {
     constructor(private name: string) {}

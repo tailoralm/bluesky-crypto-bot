@@ -1,8 +1,8 @@
 import {
   calculatePercentageChange,
   formatCurrency,
-} from "./format.utils";
-import {IMarketChart} from "../interfaces/coingecko.interface";
+} from "../../utils/format.utils";
+import { IMarketChart} from "./coingecko.interface";
 
 export const getCurrentPrice = (data: IMarketChart) => {
   return formatCurrency(data.prices[data.prices.length - 1][1]);

@@ -1,11 +1,11 @@
 import BitcoinController from "./cryptos/bitcoin.controller";
 import EtherController from "./cryptos/ether.controller";
 import SolanaController from "./cryptos/solana.controller";
-import BlueskyService from "../services/publishers/bluesky.service";
-import {ITimePost, myCache} from "../utils/cache.utils";
-import { TIMER } from "../utils/enums.utils";
+import BlueskyService from "../../../shared/services/bluesky/bluesky.service";
+import {ITimePost, myCache} from "../../../shared/utils/cache.utils";
+import { TIMER } from "../../../shared/utils/enums.utils";
 
-export default class CoinsController {
+export default class CryptoPostBlueskyController {
     // Create Posts
     bitcoinController: BitcoinController;
     etherController: EtherController;

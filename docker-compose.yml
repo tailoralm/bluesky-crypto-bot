@@ -2,8 +2,6 @@ services:
   crypto-bot:
     build: .
     command: npm start
-    env_file:
-      - ./:.env
     restart: always
     volumes:
       - ./:/usr/app/
