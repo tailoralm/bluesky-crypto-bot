@@ -1,6 +1,6 @@
-// dynamoBase.ts
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, ScanCommand, PutCommand, GetCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
+import { AttributeDefinition, CreateTableCommand, CreateTableCommandInput, DescribeTableCommand, DynamoDBClient, KeySchemaElement } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, ScanCommand, PutCommand, GetCommand, DeleteCommand, BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
+import { chunkArray } from "../../../utils/format.utils";
 
 export abstract class DynamodbStorage {
     private client: DynamoDBDocumentClient;
@@ -10,8 +10,12 @@ export abstract class DynamodbStorage {
         this.tableName = tableName;
 
         const dynamoClient = new DynamoDBClient({
-            region: 'us-west-2', 
-            endpoint: 'http://localhost:8000', 
+            region: process.env.DYNAMO_REGION, 
+            endpoint: process.env.DYNAMO_URL,
+            credentials: {
+                accessKeyId: 'jkg8s',
+                secretAccessKey: 'n16zfml'
+            }
         });
 
         this.client = DynamoDBDocumentClient.from(dynamoClient);
@@ -23,6 +27,26 @@ export abstract class DynamodbStorage {
             Item: item
         });
         await this.client.send(command);
+    }
+    
+    async saveItems(items: any[]): Promise<void> {
+        const batches = chunkArray(items, 25);
+    
+        for (const batch of batches) {
+            const batchItems = batch.map(item => ({
+                PutRequest: {
+                    Item: item
+                }
+            }));
+    
+            const command = new BatchWriteCommand({
+                RequestItems: {
+                    [this.tableName]: batchItems
+                }
+            });
+    
+            await this.client.send(command);
+        }
     }
 
     async getItem(key: any): Promise<any> {
@@ -49,4 +73,59 @@ export abstract class DynamodbStorage {
         const result = await this.client.send(command);
         return result.Items ?? [];
     }
+
+    private async tableExists(): Promise<boolean> {
+        try {
+            const describeTableCommand = new DescribeTableCommand({
+                TableName: this.tableName
+            });
+            await this.client.send(describeTableCommand);
+            return true;
+        } catch (error) {
+            if (error.name === 'ResourceNotFoundException') {
+                return false;
+            }
+            throw error;
+        }
+    }
+
+    private async createTableIfNotExists(params: CreateTableCommandInput): Promise<void> {
+        const exists = await this.tableExists();
+        if (!exists) {
+            console.log(`Table "${this.tableName}" does not exist. Creating...`);
+            const command = new CreateTableCommand(params);
+            await this.client.send(command);
+            console.log(`Table "${this.tableName}" created.`);
+        } else {
+            console.log(`Table "${this.tableName}" already exists.`);
+        }
+    }
+
+    protected async ensureTableExists(partitionKey: tableColumn, sortKey?: tableColumn): Promise<void> {
+        const keySchema: KeySchemaElement[] = [{ AttributeName: partitionKey.AttributeName, KeyType: 'HASH' }];
+        const attributeDefinition: AttributeDefinition[] = [{ AttributeName: partitionKey.AttributeName, AttributeType: partitionKey.AttributeType }];
+        
+        if (sortKey) {
+            keySchema.push({ AttributeName: sortKey.AttributeName, KeyType: 'RANGE' });
+            attributeDefinition.push({ AttributeName: sortKey.AttributeName, AttributeType: sortKey.AttributeType });
+        }
+
+        const tableParams: CreateTableCommandInput = {
+            TableName: this.tableName,
+            KeySchema: keySchema,
+            AttributeDefinitions: attributeDefinition,
+            ProvisionedThroughput: {
+                ReadCapacityUnits: 1,
+                WriteCapacityUnits: 1
+            }
+        };
+
+        await this.createTableIfNotExists(tableParams);
+    }
+
+}
+
+type tableColumn = {
+    AttributeName: string;
+    AttributeType: 'S' | 'N' | 'B';
 }

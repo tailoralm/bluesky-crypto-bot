@@ -4,7 +4,7 @@ import {myCache} from "../../utils/cache.utils";
 
 export default class EtherController extends CryptoController {
     constructor() {
-        super('ethereum', 'usd', 'Ethereum');
+        super('ethereum', 'usd');
     }
 
     @Cache(myCache, {ttl: 60})

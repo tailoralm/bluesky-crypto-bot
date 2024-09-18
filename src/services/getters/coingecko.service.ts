@@ -11,7 +11,6 @@ export default class CoingeckoService {
     async fetchPriceData(days = 1, precision = 2): Promise<IMarketChart> {
         Log.log('fetching for', this.COIN_ID);
         const endpoint = `${this.COINGECKO_API_URL}/coins/${this.COIN_ID}/market_chart`;
-
         const response = await axios.get(endpoint, {
             params: { vs_currency: this.CURRENCY, days: days, precision: precision },
         });

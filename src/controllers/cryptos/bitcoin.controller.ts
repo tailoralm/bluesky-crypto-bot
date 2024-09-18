@@ -4,7 +4,7 @@ import {myCache} from "../../utils/cache.utils";
 
 export default class BitcoinController extends CryptoController {
     constructor() {
-        super('bitcoin', 'usd', 'Bitcoin');
+        super('bitcoin', 'usd');
     }
     
     @Cache(myCache, {ttl: 60})
