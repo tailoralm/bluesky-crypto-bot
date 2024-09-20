@@ -1,5 +1,5 @@
 import axios from "axios";
-import {IMarketChart} from "./coingecko.interface";
+import {IMarketChart} from "../../interfaces/coingecko.interface";
 import * as Log from "../../utils/log.utils";
 
 export default class CoingeckoService {

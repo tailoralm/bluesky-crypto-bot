@@ -8,8 +8,8 @@ export default class BitcoinController extends CryptoController {
     }
     
     @Cache(myCache, {ttl: 60})
-    protected getCachedPriceData(){
-        return super.getCachedPriceData();
+    protected getCachedPriceData(days: number, precision: number) {
+        return super.getCachedPriceData(days, precision);
     }
 }
 

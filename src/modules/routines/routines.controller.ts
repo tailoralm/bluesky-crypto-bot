@@ -1,28 +1,30 @@
 import * as schedule from "node-schedule";
 import * as Log from "../../shared/utils/log.utils";
-import {CRON} from "../../shared/utils/enums.utils";
-import CoinsController from "./crypto-post-bluesky/crypto-post-bluesky.controller";
+import {CRON, TIMER} from "../../shared/utils/enums.utils";
+import CryptoPostBlueskyController from "./crypto-post-bluesky/crypto-post-bluesky.controller";
 export default class RoutinesController {
     private jobs: schedule.Job[] = [];
-    private coinsController: CoinsController;
+    private cryptoPostBlueskyController: CryptoPostBlueskyController;
     constructor() {
-        this.coinsController = new CoinsController();
+        this.cryptoPostBlueskyController = new CryptoPostBlueskyController();
     }
 
     init(){
         Log.log('Creating jobs...');
         if(process.env.IS_DEV) {
-            console.log('Running for DEV');
-            this.coinsController.postAllCryptos24h();
+            Log.log('Running for DEV');
+            this.cryptoPostBlueskyController.postAllCryptos1Week();
         } else {
             this.jobs.push(schedule.scheduleJob(CRON.EVERY_HOUR, () => {
                 const now = new Date();
                 Log.log('Running process');
 
-                if (now.getHours() === 7 || now.getHours() === 19) {
-                    this.coinsController.postAllCryptos24h();
+                if (now.getHours() === 7){
+                    this.cryptoPostBlueskyController.postAllCryptos1Week();
+                } else if (now.getHours() === 19) {
+                    this.cryptoPostBlueskyController.postAllCryptos24h();
                 } else {
-                    this.coinsController.postSingleCryptos1hIfVariation(1); 
+                    this.cryptoPostBlueskyController.postSingleCryptos1hIfVariation(2, TIMER.SIX_HOURS_IN_MS); 
                 }
             }));
         }
