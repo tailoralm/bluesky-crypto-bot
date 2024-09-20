@@ -1,9 +1,9 @@
-import CoingeckoService from "../../../../shared/services/coingecko/coingecko.service";
-import CryptoMessageBuilder from "../crypto.message-builder";
-import * as CGUtils from "../../../../shared/utils/coingecko.utils";
-import {ICryptoGetPrice} from "../../../../shared/interfaces/cryptos.interface";
-import { CoinHistoryStorage, ICoinPriceHistory } from "../../../../shared/services/dynamodb/coin-history.storage";
-import { IMarketChart } from "../../../../shared/interfaces/coingecko.interface";
+import CoingeckoService from "../../shared/services/coingecko/coingecko.service";
+import CryptoMessageBuilder from "../../message-builders/crypto.message-builder";
+import {getCurrentPrice, getPriceChange1h} from "../../shared/services/coingecko/coingecko.utils";
+import {ICryptoGetPrice} from "../../shared/interfaces/cryptos.interface";
+import { CoinHistoryStorage, ICoinPriceHistory } from "../../shared/services/dynamodb/coin-history.storage";
+import { IMarketChart } from "../../shared/interfaces/coingecko.interface";
 
 export default class CryptoController {
     protected coingeckoService: CoingeckoService;
@@ -16,32 +16,26 @@ export default class CryptoController {
         this.coinHistoryStorage = new CoinHistoryStorage();
     }
 
-    protected getCachedPriceData(days: number, precision: number) {
-        return this.coingeckoService.fetchPriceData(days, precision);
+    protected getCachedPriceData(){
+        return this.coingeckoService.fetchPriceData();
     }
 
     async get1hPricePost(): Promise<ICryptoGetPrice> {
-        const response = await this.getCachedPriceData(1, 2);
-        const currentPrice = CGUtils.getCurrentPrice(response);
-        const priceChange1h = CGUtils.getPriceChangeXPositions(response, 12);
+        const response = await this.getCachedPriceData();
+        const currentPrice = getCurrentPrice(response);
+        const priceChange1h = getPriceChange1h(response);
         const postText = this.messageBuilder.createCurrentPriceAnd1hChangeSummary(currentPrice, priceChange1h);
         return { currentPrice, priceChange1h: Number(priceChange1h), postText };
     };
 
     async get24hPost(): Promise<ICryptoGetPrice> {
-        const priceData = await this.getCachedPriceData(1, 2);
+        const priceData = await this.getCachedPriceData();
+        this.savePricesToDB(priceData);
         const postText = this.messageBuilder.create24hPriceUpdateSummary(priceData);
         return { postText };
     };
 
-    async get1WeekPost(): Promise<ICryptoGetPrice> {
-        const priceData = await this.getCachedPriceData(7, 2);
-        this.savePricesToDB(priceData);
-        const postText = this.messageBuilder.create7dReportPriceUpdateSummary(priceData);
-        return { postText };
-    };
-
-    private savePricesToDB(data: IMarketChart): void {
+    savePricesToDB(data: IMarketChart): void {
         try {
             const formattedData: ICoinPriceHistory[] = [];        
             for (let i = 0; i < data.prices.length; i++) {
